@@ -1,6 +1,9 @@
 package kwang.qrreader;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,12 +34,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
 
     private Button scanBtn;
     private TextView formatTxt, contentTxt;
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        surfaceHolder = surfaceView.getHolder();
+
+        //install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed
+        //surfaceHolder.addCallback(this);
+        //deprecate setting, but required on Android versions piror to 3.0
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,54 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         contentTxt = (TextView)findViewById(R.id.scan_content);
         scanBtn.setOnClickListener(this);
         //New added part
-        try{ super.onCreate(savedInstanceState);
-            //cv = new CustomCameraView(this.getApplicationContext());
-            CustomCameraView cv = new CustomCameraView(this.getApplicationContext());
-            FrameLayout rl = new FrameLayout( this.getApplicationContext()); setContentView(rl); rl.addView(cv); }
-        catch(Exception e){}
-    }
-    //New
-    public class CustomCameraView extends SurfaceView {
-        Camera camera;
-        SurfaceHolder previewHolder;
-        SurfaceHolder.Callback surfaceHolderListener = new SurfaceHolder.Callback()
-        { public void surfaceCreated(SurfaceHolder holder) {
-                camera=Camera.open();
-                try { camera.setPreviewDisplay(previewHolder);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            public void surfaceChanged(SurfaceHolder holder, int format, int w, int h)
-            { Parameters params = camera.getParameters();
-                params.setPreviewSize(800, 480);
-                params.setPictureFormat(PixelFormat.JPEG);
-                camera.setParameters(params);
-                camera.startPreview(); }
-            public void surfaceDestroyed(SurfaceHolder arg0)
-            {
-                camera.stopPreview();
-                camera.release(); }
-        };
-        public CustomCameraView(Context context) { super(context);
-            previewHolder = this.getHolder();
-            previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-            previewHolder.addCallback(surfaceHolderListener);
-            setBackgroundColor(Color.TRANSPARENT);
-        }
-        protected void onDraw (Canvas canvas)
-        {
-            super.onDraw(canvas);
-        }
-
-        public void closeCamera()
-        {
-            if(camera != null)
-                camera.release();
-        }
-        public void dispatchDraw(Canvas c) {
-            super.dispatchDraw(c);
-        }
     }
 
     @Override
@@ -131,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         }
 
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
@@ -138,6 +105,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
             String scanFormat = scanningResult.getFormatName();
             formatTxt.setText("FORMAT: " + scanFormat);
             contentTxt.setText("CONTENT: " + scanContent);
+            if (scanContent.equals("123")) {
+                formatTxt.setText("changed");
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                TestFragment fragment = new TestFragment();
+                fragmentTransaction.add(R.id.test, fragment);
+                fragmentTransaction.commit();
+            }
         }
         else{
             Toast toast = Toast.makeText(getApplicationContext(),
