@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.content.Context;
 import android.util.Log;
 import java.io.IOException;
+import android.content.res.Configuration;
     public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
         private SurfaceHolder mHolder;
         private Camera mCamera;
@@ -20,24 +21,33 @@ import java.io.IOException;
             mHolder = getHolder();
             mHolder.addCallback(this);
             mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            {
+                mCamera.setDisplayOrientation(90);
+            }
+
         }
 
         public void surfaceCreated(SurfaceHolder holder) {
-
             try {
                 mCamera.setPreviewDisplay(holder);
+                mCamera.setPreviewDisplay(mHolder);
                 mCamera.startPreview();
             } catch (IOException e) {
                 Log.d(TAG, "Error setting camera preview: " + e.getMessage());
             }
         }
 
+
+
         public void surfaceDestroyed(SurfaceHolder holder) {
             if (mCamera != null) {
                 mCamera.stopPreview();
+                mCamera.setPreviewCallback(null);
                 mCamera.release();
                 mCamera = null;
-            }}
+            }
+            Log.e("surfaceDestroyed", "surfaceDestroyed");}
 
         public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 

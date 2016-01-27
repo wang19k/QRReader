@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
 
     private Button scanBtn;
     private TextView formatTxt, contentTxt;
-    //private SurfaceView surfaceView;
-    //private SurfaceHolder surfaceHolder;
     private Camera mCamera;
     private CameraPreview mPreview;
 
@@ -43,20 +41,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-        //surfaceHolder = surfaceView.getHolder();
-        //Edited
-        //install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed
-        //surfaceHolder.addCallback(this);
-        //deprecate setting, but required on Android versions piror to 3.0
-        //surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
         formatTxt = (TextView)findViewById(R.id.scan_format);
         contentTxt = (TextView)findViewById(R.id.scan_content);
         scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
-//        onResume();
 
+        mCamera = getCameraInstance();
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
     }
         //New added part
         public static Camera getCameraInstance(){
@@ -99,30 +92,46 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.scan_button){
-            //IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-            //scanIntegrator.initiateScan();
+            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+            scanIntegrator.initiateScan();
         }
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        RecoveryBarFragment fragment = new RecoveryBarFragment();
-        fragmentTransaction.add(R.id.test, fragment);
-        fragmentTransaction.commit();
 
     }
     @Override
     public void onResume() {
-//        if (this.mCamera == null){
-//            this.mCamera = getCameraInstance();}
-//        mPreview = new CameraPreview(this, mCamera);
-//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-//        preview.addView(mPreview);
         super.onResume();
+        /**if (this.mCamera == null){
+        this.mCamera = getCameraInstance();
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
+    }**/
+        try {
+            mCamera = Camera.open();
+            mCamera.setPreviewCallback(null);
+            mPreview = new CameraPreview(this, mCamera);// set preview
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+            mCamera.startPreview();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        try {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mPreview.getHolder().removeCallback(mPreview);
+            mCamera.release();
+            mCamera = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
@@ -145,5 +154,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
         }
+        onResume();
     }
 }
