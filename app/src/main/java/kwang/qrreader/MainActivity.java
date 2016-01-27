@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         //surfaceHolder = surfaceView.getHolder();
@@ -53,19 +51,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         //deprecate setting, but required on Android versions piror to 3.0
         //surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         formatTxt = (TextView)findViewById(R.id.scan_format);
         contentTxt = (TextView)findViewById(R.id.scan_content);
         scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
-        //onResume();
+//        onResume();
 
     }
         //New added part
@@ -109,18 +99,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.scan_button){
-            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-            scanIntegrator.initiateScan();
+            //IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+            //scanIntegrator.initiateScan();
         }
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        RecoveryBarFragment fragment = new RecoveryBarFragment();
+        fragmentTransaction.add(R.id.test, fragment);
+        fragmentTransaction.commit();
 
     }
     @Override
     public void onResume() {
-        if (this.mCamera == null){
-            this.mCamera = getCameraInstance();}
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+//        if (this.mCamera == null){
+//            this.mCamera = getCameraInstance();}
+//        mPreview = new CameraPreview(this, mCamera);
+//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+//        preview.addView(mPreview);
         super.onResume();
     }
 
