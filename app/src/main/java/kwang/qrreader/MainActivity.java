@@ -65,8 +65,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         contentTxt = (TextView)findViewById(R.id.scan_content);
         scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
-        //onResume();
-
+        mCamera = getCameraInstance();
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
     }
         //New added part
         public static Camera getCameraInstance(){
@@ -116,18 +118,39 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     }
     @Override
     public void onResume() {
-        if (this.mCamera == null){
-            this.mCamera = getCameraInstance();}
+        super.onResume();
+        /**if (this.mCamera == null){
+        this.mCamera = getCameraInstance();
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
-        super.onResume();
+    }**/
+        try {
+            mCamera = Camera.open();
+            mCamera.setPreviewCallback(null);
+            mPreview = new CameraPreview(this, mCamera);// set preview
+            FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+            preview.addView(mPreview);
+            mCamera.startPreview();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        try {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mPreview.getHolder().removeCallback(mPreview);
+            mCamera.release();
+            mCamera = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
@@ -150,5 +173,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                     "No scan data received!", Toast.LENGTH_SHORT);
             toast.show();
         }
+        onResume();
     }
 }
