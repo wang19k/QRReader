@@ -14,8 +14,17 @@
     <Button android:id="@+id/scan_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/Scanner" />
+        android:text="@string/Scanner"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:layout_below="@+id/scan_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     <TextView
         android:id="@+id/scan_format"
         android:layout_width="wrap_content"

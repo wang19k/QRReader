@@ -22,20 +22,21 @@ import android.widget.FrameLayout;
 import android.content.Context;
 import android.view.SurfaceView;
 import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
 import android.view.SurfaceHolder;
-import android.graphics.PixelFormat;
-import android.graphics.Canvas;
-import android.graphics.Color;
+
 
 import java.io.IOException;
+import kwang.qrreader.CameraPreview;
+
 
 public class MainActivity extends AppCompatActivity implements OnClickListener{
 
     private Button scanBtn;
     private TextView formatTxt, contentTxt;
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
+    //private SurfaceView surfaceView;
+    //private SurfaceHolder surfaceHolder;
+    private Camera mCamera;
+    private CameraPreview mPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-        surfaceHolder = surfaceView.getHolder();
-
+        //surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        //surfaceHolder = surfaceView.getHolder();
+        //Edited
         //install a SurfaceHolder.Callback so we get notified when the underlying surface is created and destroyed
         //surfaceHolder.addCallback(this);
         //deprecate setting, but required on Android versions piror to 3.0
-        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        //surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -60,12 +61,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                         .setAction("Action", null).show();
             }
         });
-        scanBtn = (Button)findViewById(R.id.scan_button);
         formatTxt = (TextView)findViewById(R.id.scan_format);
         contentTxt = (TextView)findViewById(R.id.scan_content);
+        scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
-        //New added part
+        //onResume();
+
     }
+        //New added part
+        public static Camera getCameraInstance(){
+            Camera c = null;
+            try {
+                c = Camera.open();
+            }
+            catch (Exception e){
+                // Camera is not available (in use or does not exist)
+            }
+            return c; // returns null if camera is unavailable
+        }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,6 +113,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
             scanIntegrator.initiateScan();
         }
 
+    }
+    @Override
+    public void onResume() {
+        if (this.mCamera == null){
+            this.mCamera = getCameraInstance();}
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
