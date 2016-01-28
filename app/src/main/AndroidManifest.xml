@@ -20,6 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ScannerActivity"
+            android:label="QR Reader"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filer>
+                <action android:name="android.intent.action.SCAN" />
+                <category android:name="android.intent.category.SCANNER" />
+            </intent-filer>
+        </activity>
     </application>
 
 </manifest>

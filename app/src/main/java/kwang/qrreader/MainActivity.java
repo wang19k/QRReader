@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+
+        Intent scan = new Intent(this.getApplicationContext(), ScannerActivity.class);
+        startActivity(scan);
     }
         //New added part
         public static Camera getCameraInstance(){
