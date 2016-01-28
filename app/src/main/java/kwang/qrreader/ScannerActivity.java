@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -48,6 +49,8 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
         }
         contentFrame.addView(mScannerView);
         back.bringToFront();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mScannerView.setAutoFocus(true);
     }
 
     @Override
