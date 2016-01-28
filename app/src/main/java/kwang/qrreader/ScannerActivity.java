@@ -31,7 +31,7 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
     private ZXingScannerView mScannerView;
     Button back;
     Fragment snack;
-    boolean isSnack;
+    boolean isSnack = false;
 
     @Override
     public void onCreate(Bundle state) {
@@ -43,8 +43,9 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
         };
         back = (Button) findViewById(R.id.back);
         back.setOnClickListener(this);
-        back.setAlpha(0f);
-        isSnack = false;
+        if (!isSnack) {
+            back.setAlpha(0f);
+        }
         contentFrame.addView(mScannerView);
         back.bringToFront();
     }
