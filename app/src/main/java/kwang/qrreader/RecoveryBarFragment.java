@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Created by Oliver on 1/27/2016.
@@ -19,7 +20,7 @@ public class RecoveryBarFragment extends Fragment implements View.OnClickListene
 
     private ImageView top;
     private ImageButton calories, fat, protein, sugar;
-    private Button back;
+    private Button back, background;
     private int alpha = 200;
 
     @Override
@@ -30,6 +31,7 @@ public class RecoveryBarFragment extends Fragment implements View.OnClickListene
         fat = (ImageButton) view.findViewById(R.id.fat);
         protein = (ImageButton) view.findViewById(R.id.protein);
         sugar = (ImageButton) view.findViewById(R.id.sugar);
+        background = (Button) view.findViewById(R.id.background);
 
         top.setImageAlpha(alpha);
         calories.setImageAlpha(alpha);
@@ -40,9 +42,11 @@ public class RecoveryBarFragment extends Fragment implements View.OnClickListene
         fat.getBackground().setAlpha(0);
         protein.getBackground().setAlpha(0);
         sugar.getBackground().setAlpha(0);
+        background.setAlpha(0);
 
         back = (Button) view.findViewById(R.id.back);
         back.setOnClickListener(this);
+        background.setOnClickListener(this);
 
         return view;
     }
@@ -52,6 +56,7 @@ public class RecoveryBarFragment extends Fragment implements View.OnClickListene
         //click to end the activity
         if (v.getId() == R.id.back) {
             getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+        } else if (v.getId() == R.id.background) {
         }
     }
 

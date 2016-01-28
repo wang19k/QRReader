@@ -41,11 +41,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        formatTxt = (TextView)findViewById(R.id.scan_format);
-        contentTxt = (TextView)findViewById(R.id.scan_content);
         scanBtn = (Button)findViewById(R.id.scan_button);
         scanBtn.setOnClickListener(this);
-
+        scanBtn.setAlpha(0);
         mCamera = getCameraInstance();
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
@@ -62,10 +60,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
             }
             return c; // returns null if camera is unavailable
         }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         } catch (Exception e) {
 
         }
+        try {
+            scanBtn.setOnClickListener(this);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -130,6 +129,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            scanBtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+        } catch (Exception e) {
+
+        }
     }
 
 
@@ -138,13 +146,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         if (scanningResult != null) {
             String scanContent = scanningResult.getContents();
             String scanFormat = scanningResult.getFormatName();
-            formatTxt.setText("FORMAT: " + scanFormat);
-            contentTxt.setText("CONTENT: " + scanContent);
             if (scanContent.equals("123")) {
-                formatTxt.setText("changed");
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                TestFragment fragment = new TestFragment();
+                RecoveryBarFragment fragment = new RecoveryBarFragment();
                 fragmentTransaction.add(R.id.test, fragment);
                 fragmentTransaction.commit();
             }

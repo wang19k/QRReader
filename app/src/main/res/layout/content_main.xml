@@ -12,8 +12,8 @@
     tools:context="kwang.qrreader.MainActivity"
     tools:showIn="@layout/activity_main">
     <Button android:id="@+id/scan_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:text="@string/Scanner"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -22,9 +22,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:layout_below="@+id/scan_button"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
     <TextView
         android:id="@+id/scan_format"
         android:layout_width="wrap_content"
