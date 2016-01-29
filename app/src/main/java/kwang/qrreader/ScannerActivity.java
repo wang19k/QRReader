@@ -84,7 +84,7 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
             if (rawResult.getText().contentEquals("123")) {
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                snack = new RecoveryBarFragment();
+                snack = new SpinnerFragment();
                 fragmentTransaction.add(R.id.scan_frame, snack);
                 fragmentTransaction.commit();
                 back.setAlpha(1f);
@@ -93,7 +93,7 @@ public class ScannerActivity extends Activity implements ZXingScannerView.Result
             if (rawResult.getText().contentEquals("test")) {
                 FragmentManager fragmentManger = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManger.beginTransaction();
-                snack = new TestFragment();
+                snack = new IngredientsFragment();
                 fragmentTransaction.add(R.id.scan_frame, snack);
                 fragmentTransaction.commit();
                 back.setAlpha(1f);
